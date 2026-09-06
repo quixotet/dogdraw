@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Dog Draw Club</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>&#128054;</text></svg>">
+</head>
+<body>
+
+<!-- ======================= LOGIN ======================= -->
+<div id="login" class="screen">
+  <div class="login-card">
+    <div class="login-mark" aria-hidden="true">
+      <svg viewBox="0 0 120 90"><use href="#dogMark"/></svg>
+    </div>
+    <h1>The Dog&nbsp;Draw Club</h1>
+    <p class="tagline">205 breeds. One a week. No repeats.</p>
+
+    <form id="passForm" autocomplete="off">
+      <label for="passInput">Passphrase</label>
+      <input type="password" id="passInput" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;" required>
+      <p id="passError" class="err" hidden>That's not it. Try again.</p>
+      <button type="submit" class="btn primary">Come in</button>
+    </form>
+
+    <div id="artistPick" hidden>
+      <label class="who">Who's drawing?</label>
+      <div id="artistButtons" class="artist-buttons"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================= APP ======================= -->
+<div id="app" class="screen" hidden>
+
+  <header class="topbar">
+    <div class="brand">
+      <svg class="brand-mark" viewBox="0 0 120 90" aria-hidden="true"><use href="#dogMark"/></svg>
+      <span>Dog Draw Club</span>
+    </div>
+    <nav class="tabs">
+      <button class="tab active" data-view="roller">Roller</button>
+      <button class="tab" data-view="gallery">Gallery</button>
+    </nav>
+    <div class="whoami">
+      <span id="whoName"></span>
+      <button id="switchArtist" class="linkbtn" title="Switch artist">switch</button>
+    </div>
+  </header>
+
+  <div id="syncBar" class="syncbar" hidden><span id="syncMsg"></span></div>
+
+  <!-- ---------- ROLLER ---------- -->
+  <main id="view-roller" class="view">
+    <section class="roller-wrap">
+
+      <div id="rollIdle">
+        <div class="stat-row">
+          <div class="stat"><b id="statMine">0</b><span>your breeds</span></div>
+          <div class="stat"><b id="statBoth">0</b><span>both drew</span></div>
+          <div class="stat"><b id="statLeft">205</b><span>left for you</span></div>
+        </div>
+
+        <div id="pendingCard" class="pending" hidden>
+          <p class="pending-label">You still owe a drawing of</p>
+          <h2 id="pendingBreed"></h2>
+          <p class="pending-meta" id="pendingMeta"></p>
+          <button class="btn primary" id="pendingUploadBtn">Upload your drawing</button>
+          <button class="btn ghost small" id="rollAnywayBtn">Roll a new one anyway</button>
+        </div>
+
+        <div id="rollCta">
+          <p class="cta-copy">Ready for this week's breed?</p>
+          <button id="rollBtn" class="btn primary big">Roll the dog</button>
+          <label class="avoid">
+            <input type="checkbox" id="avoidPartner">
+            <span>Skip breeds <b id="partnerName">they</b> already have</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- rolling animation -->
+      <div id="rollAnim" hidden>
+        <svg class="scene" viewBox="0 0 420 250" aria-label="A dog leaping to catch a paintbrush">
+          <ellipse class="shadow" cx="210" cy="212" rx="46" ry="7"/>
+          <line class="ground" x1="20" y1="212" x2="400" y2="212"/>
+
+          <g id="brush">
+            <g class="brush-spin">
+              <rect x="-30" y="-4.5" width="38" height="9" rx="4.5" class="b-handle"/>
+              <rect x="6" y="-6" width="10" height="12" rx="2" class="b-ferrule"/>
+              <path d="M15 -6 L30 -4 L30 4 L15 6 Z" class="b-bristle"/>
+            </g>
+          </g>
+
+          <g id="dog">
+            <g class="dog-bob">
+              <g class="leg far" transform="translate(-15,-25)"><rect x="-3.2" y="0" width="6.4" height="25" rx="3.2"/></g>
+              <g class="leg far b" transform="translate(15,-25)"><rect x="-3.2" y="0" width="6.4" height="25" rx="3.2"/></g>
+              <g transform="translate(-30,-34)"><g class="tailwrap">
+                <path class="tail" d="M0 0 q-16 -6 -14 -22"/>
+              </g></g>
+              <ellipse class="body" cx="0" cy="-26" rx="31" ry="19"/>
+              <g class="leg near b" transform="translate(-19,-26)"><rect x="-3.5" y="0" width="7" height="26" rx="3.5"/></g>
+              <g class="leg near" transform="translate(19,-26)"><rect x="-3.5" y="0" width="7" height="26" rx="3.5"/></g>
+              <g class="head">
+                <ellipse class="snout" cx="46" cy="-41" rx="11" ry="7"/>
+                <circle class="skull" cx="31" cy="-47" r="15.5"/>
+                <g transform="translate(22,-58)"><g class="earwrap">
+                  <path class="ear" d="M0 0 q-11 2 -10 15 q1 10 9 9 q6 -2 5 -12 z"/>
+                </g></g>
+                <circle class="nose" cx="55" cy="-42" r="3.4"/>
+                <circle class="eye" cx="34" cy="-51" r="2.6"/>
+              </g>
+            </g>
+          </g>
+
+          <g class="splats">
+            <circle class="splat s1" cx="126" cy="209" r="8"/>
+            <circle class="splat s2" cx="292" cy="211" r="5.5"/>
+            <circle class="splat s3" cx="199" cy="207" r="4.5"/>
+          </g>
+        </svg>
+        <p class="roll-status" id="rollStatus">Fetching a good boy&hellip;</p>
+      </div>
+
+      <!-- result -->
+      <div id="rollResult" hidden>
+        <p class="result-label">This week you're drawing</p>
+        <h2 id="resultBreed"></h2>
+        <p class="result-group" id="resultGroup"></p>
+        <div class="result-actions">
+          <button class="btn primary" id="acceptBtn">Lock it in</button>
+          <button class="btn ghost" id="rerollBtn">Reroll</button>
+        </div>
+        <p class="fineprint">Locking it in saves the breed to your list so it never comes up again.</p>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- ---------- GALLERY ---------- -->
+  <main id="view-gallery" class="view" hidden>
+    <div class="gallery-controls">
+      <input type="search" id="search" placeholder="Search breeds&hellip;">
+      <select id="filterGroup"><option value="">All groups</option></select>
+      <select id="filterState">
+        <option value="">All breeds</option>
+        <option value="both">Both drew it</option>
+        <option value="mine">You drew it</option>
+        <option value="theirs">They drew it</option>
+        <option value="pending">Claimed, not drawn</option>
+        <option value="none">Not started</option>
+      </select>
+      <span class="count" id="galleryCount"></span>
+    </div>
+    <div id="grid" class="grid"></div>
+  </main>
+</div>
+
+<!-- ======================= BREED MODAL ======================= -->
+<div id="modal" class="modal" hidden>
+  <div class="modal-card" role="dialog" aria-modal="true">
+    <button class="modal-close" id="modalClose" aria-label="Close">&times;</button>
+    <h2 id="modalBreed"></h2>
+    <p class="modal-group" id="modalGroup"></p>
+    <div id="modalArtists" class="modal-artists"></div>
+    <div class="upload-row">
+      <input type="file" id="fileInput" accept="image/*" hidden>
+      <button class="btn primary" id="uploadBtn">Add your drawing</button>
+      <span class="upload-note" id="uploadNote"></span>
+    </div>
+  </div>
+</div>
+
+<!-- ======================= TOKEN PROMPT ======================= -->
+<div id="tokenModal" class="modal" hidden>
+  <div class="modal-card narrow" role="dialog" aria-modal="true">
+    <h2>Connect to GitHub</h2>
+    <p class="muted">Saving a roll or a drawing writes to the repo, so it needs a
+    personal access token with write access to <b id="tokenRepo"></b>. It's kept
+    in this browser only &mdash; it never leaves your machine except to talk to GitHub.</p>
+    <ol class="howto">
+      <li>Go to <b>github.com &rarr; Settings &rarr; Developer settings &rarr; Personal access tokens &rarr; Fine-grained tokens</b></li>
+      <li>Generate a token scoped to just this repository</li>
+      <li>Give it <b>Repository permissions &rarr; Contents &rarr; Read and write</b></li>
+      <li>Paste it below</li>
+    </ol>
+    <input type="password" id="tokenInput" placeholder="github_pat_&hellip;">
+    <p id="tokenError" class="err" hidden></p>
+    <div class="result-actions">
+      <button class="btn primary" id="tokenSave">Save token</button>
+      <button class="btn ghost" id="tokenCancel">Browse read-only</button>
+    </div>
+  </div>
+</div>
+
+<!-- shared svg symbols -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <g id="dogMark">
+    <ellipse cx="52" cy="52" rx="30" ry="19" fill="currentColor"/>
+    <circle cx="80" cy="38" r="15" fill="currentColor"/>
+    <ellipse cx="94" cy="43" rx="10" ry="6.5" fill="currentColor"/>
+    <path d="M72 27 q-11 2 -10 15 q1 10 9 9 q6 -2 5 -12 z" fill="currentColor" opacity=".7"/>
+    <path d="M23 45 q-15 -6 -13 -22" stroke="currentColor" stroke-width="6" stroke-linecap="round" fill="none"/>
+    <rect x="34" y="66" width="7" height="18" rx="3.5" fill="currentColor"/>
+    <rect x="62" y="66" width="7" height="18" rx="3.5" fill="currentColor"/>
+  </g>
+</svg>
+
+<script src="js/config.js"></script>
+<script src="js/breeds.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

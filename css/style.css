@@ -1,0 +1,317 @@
+/* ============================ tokens ============================ */
+:root{
+  --paper:#faf6ef;
+  --paper-2:#f2ebdf;
+  --card:#fffdf9;
+  --ink:#2c2723;
+  --ink-2:#6b6055;
+  --ink-3:#9c9083;
+  --rule:#e2d8c8;
+  --accent:#c4562f;
+  --accent-soft:#f5e3da;
+  --gold:#c9962c;
+  --gold-2:#f0d488;
+  --teal:#3f7d75;
+  --shadow:0 1px 2px rgba(60,45,30,.06), 0 8px 24px rgba(60,45,30,.07);
+  --r:14px;
+  --font:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --sans:ui-sans-serif,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:var(--sans); font-size:15px; line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3{font-family:var(--font); font-weight:600; letter-spacing:-.01em; margin:0}
+button{font:inherit}
+.screen{min-height:100vh}
+[hidden]{display:none !important}
+.muted{color:var(--ink-2)}
+.err{color:var(--accent); font-size:13px; margin:6px 0 0}
+
+/* ============================ buttons ============================ */
+.btn{
+  border:1px solid transparent; border-radius:999px; padding:10px 22px;
+  cursor:pointer; font-weight:600; font-size:14px; transition:.15s ease;
+  transition-property:transform,background,border-color,color,box-shadow;
+}
+.btn:active{transform:translateY(1px)}
+.btn.primary{background:var(--ink); color:var(--paper)}
+.btn.primary:hover{background:#453c34}
+.btn.primary:disabled{background:var(--ink-3); cursor:default}
+.btn.ghost{background:transparent; color:var(--ink-2); border-color:var(--rule)}
+.btn.ghost:hover{border-color:var(--ink-3); color:var(--ink)}
+.btn.big{padding:15px 44px; font-size:17px}
+.btn.small{padding:7px 16px; font-size:13px}
+.linkbtn{background:none;border:none;color:var(--ink-3);cursor:pointer;font-size:12px;text-decoration:underline;padding:0}
+.linkbtn:hover{color:var(--accent)}
+
+/* ============================ login ============================ */
+#login{display:grid; place-items:center; padding:24px;
+  background:radial-gradient(1100px 500px at 50% -10%, #fffdf8, var(--paper));}
+.login-card{
+  background:var(--card); border:1px solid var(--rule); border-radius:22px;
+  padding:44px 40px 38px; width:min(430px,100%); text-align:center; box-shadow:var(--shadow);
+}
+.login-mark{color:var(--accent); margin-bottom:14px}
+.login-mark svg{width:96px; height:72px}
+.login-card h1{font-size:31px; line-height:1.15}
+.tagline{color:var(--ink-2); margin:8px 0 28px; font-size:14px}
+#passForm label,.who{
+  display:block; text-align:left; font-size:12px; font-weight:600;
+  text-transform:uppercase; letter-spacing:.08em; color:var(--ink-3); margin-bottom:7px;
+}
+#passInput,#tokenInput,#search,select,.gallery-controls input{
+  width:100%; padding:11px 14px; border:1px solid var(--rule); border-radius:10px;
+  background:var(--paper); font:inherit; color:var(--ink);
+}
+#passInput:focus,#tokenInput:focus,#search:focus,select:focus{
+  outline:none; border-color:var(--ink-3); background:#fff;
+}
+#passForm .btn{width:100%; margin-top:16px}
+.artist-buttons{display:grid; gap:10px}
+.artist-buttons .btn{width:100%}
+
+/* ============================ chrome ============================ */
+.topbar{
+  display:flex; align-items:center; gap:24px; padding:14px 26px;
+  border-bottom:1px solid var(--rule); background:var(--card);
+  position:sticky; top:0; z-index:20;
+}
+.brand{display:flex; align-items:center; gap:9px; font-family:var(--font); font-size:17px; font-weight:600}
+.brand-mark{width:32px; height:24px; color:var(--accent)}
+.tabs{display:flex; gap:4px; margin-left:auto}
+.tab{
+  background:none; border:none; padding:8px 18px; border-radius:999px;
+  color:var(--ink-2); cursor:pointer; font-size:14px; font-weight:600;
+}
+.tab:hover{color:var(--ink); background:var(--paper-2)}
+.tab.active{background:var(--ink); color:var(--paper)}
+.whoami{margin-left:auto; text-align:right; line-height:1.2}
+.whoami #whoName{display:block; font-weight:600; font-size:14px}
+.syncbar{
+  padding:9px 26px; font-size:13px; background:var(--accent-soft);
+  color:#8a3a1c; border-bottom:1px solid #eccfc2;
+}
+.syncbar.ok{background:#e4efe9; color:#2c5f4f; border-bottom-color:#cfe3d9}
+.view{max-width:1180px; margin:0 auto; padding:34px 26px 80px}
+
+/* ============================ roller ============================ */
+.roller-wrap{max-width:640px; margin:0 auto; text-align:center; padding-top:26px}
+.stat-row{display:flex; justify-content:center; gap:14px; margin-bottom:38px}
+.stat{
+  flex:1; background:var(--card); border:1px solid var(--rule);
+  border-radius:var(--r); padding:16px 10px;
+}
+.stat b{display:block; font-family:var(--font); font-size:29px; line-height:1}
+.stat span{font-size:11.5px; text-transform:uppercase; letter-spacing:.07em; color:var(--ink-3)}
+.cta-copy{color:var(--ink-2); margin:0 0 20px}
+.avoid{
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  margin-top:22px; font-size:13px; color:var(--ink-2); cursor:pointer;
+}
+.pending{
+  background:var(--card); border:1px dashed var(--accent); border-radius:var(--r);
+  padding:26px; margin-bottom:30px;
+}
+.pending-label,.result-label{
+  font-size:12px; text-transform:uppercase; letter-spacing:.09em;
+  color:var(--ink-3); margin:0 0 8px;
+}
+.pending h2{font-size:26px}
+.pending-meta{font-size:13px; color:var(--ink-3); margin:6px 0 18px}
+.pending .btn+.btn{margin-left:8px}
+
+#rollResult h2{font-size:40px; line-height:1.1; margin:4px 0}
+.result-group{color:var(--teal); font-weight:600; font-size:14px; margin:0 0 26px}
+.result-actions{display:flex; gap:10px; justify-content:center}
+.fineprint{font-size:12px; color:var(--ink-3); margin-top:18px}
+.roll-status{color:var(--ink-2); font-size:14px; margin-top:4px}
+
+/* ============================ the animation ============================ */
+.scene{width:100%; max-width:460px; height:auto; display:block; margin:0 auto}
+.scene .ground{stroke:var(--rule); stroke-width:2; stroke-linecap:round}
+.scene .shadow{fill:rgba(60,45,30,.10); transform-box:fill-box; transform-origin:center;
+  animation:shadowPulse 2.6s infinite cubic-bezier(.4,0,.5,1)}
+
+#dog{animation:dogRun 2.6s infinite cubic-bezier(.42,0,.58,1)}
+#dog .body,#dog .skull,#dog .snout{fill:#b9793f}
+#dog .leg rect{fill:#b9793f}
+#dog .leg.far rect{fill:#96602f}
+#dog .ear{fill:#8c5a2c}
+#dog .tail{stroke:#b9793f; stroke-width:6.5; stroke-linecap:round; fill:none}
+#dog .nose{fill:#3a2b1e}
+#dog .eye{fill:#3a2b1e}
+.dog-bob{animation:bob .26s infinite ease-in-out}
+
+.leg rect{transform-box:fill-box; transform-origin:center top; animation:trot .26s infinite ease-in-out}
+.leg.b rect{animation-delay:-.13s}
+.tailwrap{transform-box:fill-box; transform-origin:right bottom; animation:wag .22s infinite ease-in-out}
+.earwrap{transform-box:fill-box; transform-origin:center top; animation:flop .26s infinite ease-in-out}
+
+#brush{animation:brushFly 2.6s infinite cubic-bezier(.33,0,.5,1)}
+.brush-spin{animation:brushSpin 2.6s infinite cubic-bezier(.4,0,.6,1)}
+.b-handle{fill:#8a6a45}
+.b-ferrule{fill:#b9b3a6}
+.b-bristle{fill:var(--accent)}
+
+.splat{fill:var(--accent); opacity:0; transform-box:fill-box; transform-origin:center;
+  animation:splat 2.6s infinite ease-out}
+.splat.s2{animation-delay:.12s; fill:var(--teal)}
+.splat.s3{animation-delay:.22s; fill:var(--gold)}
+
+@keyframes dogRun{
+  0%   {transform:translate(-100px,212px)}
+  38%  {transform:translate(160px,212px)}
+  48%  {transform:translate(196px,178px)}
+  56%  {transform:translate(216px,166px)}
+  66%  {transform:translate(248px,196px)}
+  74%  {transform:translate(272px,212px)}
+  100% {transform:translate(520px,212px)}
+}
+@keyframes brushFly{
+  0%   {transform:translate(540px,60px)}
+  30%  {transform:translate(390px,68px)}
+  56%  {transform:translate(271px,124px)}
+  66%  {transform:translate(303px,154px)}
+  74%  {transform:translate(327px,170px)}
+  100% {transform:translate(575px,170px)}
+}
+@keyframes brushSpin{
+  0%{transform:rotate(0deg)} 56%,100%{transform:rotate(1080deg)}
+}
+@keyframes trot{
+  0%,100%{transform:rotate(26deg)} 50%{transform:rotate(-26deg)}
+}
+@keyframes bob{
+  0%,100%{transform:translateY(0)} 50%{transform:translateY(-2px)}
+}
+@keyframes wag{
+  0%,100%{transform:rotate(-13deg)} 50%{transform:rotate(13deg)}
+}
+@keyframes flop{
+  0%,100%{transform:rotate(-7deg)} 50%{transform:rotate(9deg)}
+}
+@keyframes shadowPulse{
+  0%   {transform:translateX(-310px) scale(1);   opacity:.5}
+  38%  {transform:translateX(-50px)  scale(1);   opacity:.5}
+  48%  {transform:translateX(-14px)  scale(.72); opacity:.3}
+  56%  {transform:translateX(6px)    scale(.6);  opacity:.22}
+  66%  {transform:translateX(38px)   scale(.85); opacity:.38}
+  74%  {transform:translateX(62px)   scale(1);   opacity:.5}
+  100% {transform:translateX(310px)  scale(1);   opacity:.5}
+}
+@keyframes splat{
+  0%,58%{opacity:0; transform:scale(.2)}
+  64%{opacity:.75; transform:scale(1.25)}
+  86%{opacity:.5; transform:scale(1)}
+  100%{opacity:0; transform:scale(1)}
+}
+@media (prefers-reduced-motion:reduce){
+  .scene *{animation-duration:.001s !important; animation-iteration-count:1 !important}
+  #dog{transform:translate(180px,212px)}
+}
+
+/* ============================ gallery ============================ */
+.gallery-controls{
+  display:flex; gap:10px; align-items:center; margin-bottom:22px; flex-wrap:wrap;
+}
+.gallery-controls #search{flex:1; min-width:200px; width:auto}
+.gallery-controls select{width:auto; min-width:150px}
+.count{font-size:13px; color:var(--ink-3); margin-left:auto; white-space:nowrap}
+
+.grid{
+  display:grid; gap:12px;
+  grid-template-columns:repeat(auto-fill,minmax(168px,1fr));
+}
+.card{
+  position:relative; background:var(--card); border:1px solid var(--rule);
+  border-radius:var(--r); cursor:pointer; overflow:hidden; text-align:left;
+  display:flex; flex-direction:column;
+  transition:transform .14s ease, box-shadow .14s ease, border-color .14s ease;
+}
+.card:hover{transform:translateY(-2px); box-shadow:var(--shadow); border-color:var(--ink-3)}
+.card:focus-visible{outline:2px solid var(--ink); outline-offset:2px}
+.thumb-wrap{
+  height:112px; flex:none; background:var(--paper-2); border-bottom:1px solid var(--rule);
+  display:grid; place-items:center; overflow:hidden;
+}
+.thumb-wrap img{width:100%; height:100%; object-fit:cover; display:block}
+.thumb-wrap .ph{width:54px; height:40px; color:#ded2be}
+.card-body{padding:11px 14px 12px; display:flex; flex-direction:column; flex:1}
+.card .cname{font-family:var(--font); font-size:15px; font-weight:600; line-height:1.25}
+.card .cdots{display:flex; gap:4px; margin-top:7px}
+.card .cdot{width:7px; height:7px; border-radius:50%; background:var(--rule)}
+.card .cdot.on{background:var(--teal)}
+.card .cdot.pend{background:var(--gold-2)}
+.card .cgroup{
+  font-size:11px; text-transform:uppercase; letter-spacing:.06em;
+  color:var(--ink-3); margin-top:auto; padding-top:8px;
+}
+
+.card.none{opacity:.5; filter:grayscale(1)}
+.card.none:hover{opacity:.85; filter:grayscale(.3)}
+.card.pending{border-style:dashed; border-color:var(--gold)}
+
+.card.both{
+  border:2px solid var(--gold); background:linear-gradient(160deg,#fffdf4,#fdf3dc);
+  box-shadow:0 0 0 1px var(--gold-2) inset, 0 4px 18px rgba(201,150,44,.18);
+}
+.card.both .cname{color:#7a5a10}
+.card.both .thumb-wrap{border-bottom-color:var(--gold-2)}
+.card.both::after{
+  content:""; position:absolute; inset:-40%; pointer-events:none;
+  background:linear-gradient(115deg,transparent 42%,rgba(255,255,255,.7) 50%,transparent 58%);
+  animation:sheen 3.6s infinite linear;
+}
+.card.both .crown{
+  position:absolute; top:7px; right:9px; font-size:14px; z-index:2;
+  filter:drop-shadow(0 1px 2px rgba(90,60,10,.5));
+}
+@keyframes sheen{0%{transform:translateX(-60%)}55%,100%{transform:translateX(60%)}}
+
+/* ============================ modal ============================ */
+.modal{
+  position:fixed; inset:0; z-index:50; background:rgba(44,39,35,.42);
+  display:grid; place-items:center; padding:22px; backdrop-filter:blur(3px);
+}
+.modal-card{
+  position:relative; background:var(--card); border-radius:20px; padding:32px;
+  width:min(680px,100%); max-height:86vh; overflow:auto; box-shadow:0 24px 70px rgba(40,30,20,.3);
+}
+.modal-card.narrow{width:min(500px,100%)}
+.modal-card h2{font-size:27px}
+.modal-group{color:var(--teal); font-weight:600; font-size:13px; margin:5px 0 22px}
+.modal-close{
+  position:absolute; top:14px; right:16px; background:none; border:none;
+  font-size:27px; line-height:1; color:var(--ink-3); cursor:pointer;
+}
+.modal-close:hover{color:var(--ink)}
+.modal-artists{display:grid; gap:22px; margin-bottom:24px}
+@media(min-width:620px){.modal-artists{grid-template-columns:1fr 1fr; gap:26px}}
+.artist-block h3{font-size:14px; text-transform:uppercase; letter-spacing:.07em; color:var(--ink-2)}
+.artist-block .status{font-size:13px; color:var(--ink-3); margin:4px 0 10px}
+.drawings{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px}
+.drawing figure{margin:0}
+.drawing img{
+  width:100%; border-radius:10px; border:1px solid var(--rule); display:block; background:var(--paper-2);
+}
+.drawing figcaption{font-size:11.5px; color:var(--ink-3); margin-top:5px}
+.upload-row{display:flex; align-items:center; gap:12px; border-top:1px solid var(--rule); padding-top:20px; flex-wrap:wrap}
+.upload-note{font-size:13px; color:var(--ink-3)}
+.howto{font-size:13px; color:var(--ink-2); line-height:1.7; padding-left:20px; margin:16px 0}
+#tokenInput{margin-bottom:14px}
+#tokenModal .result-actions{justify-content:flex-start}
+
+@media(max-width:640px){
+  .topbar{flex-wrap:wrap; gap:12px; padding:12px 16px}
+  .tabs{order:3; width:100%; margin-left:0}
+  .tab{flex:1}
+  .whoami{margin-left:auto}
+  .view{padding:24px 16px 70px}
+  #rollResult h2{font-size:31px}
+  .stat b{font-size:24px}
+}
