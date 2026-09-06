@@ -6,7 +6,7 @@
 <title>DogDraw</title>
 <!-- ?v= busts the browser cache. BUMP THIS NUMBER whenever you edit a css/ or js/
      file, or you and Casey will keep seeing the old version. -->
-<link rel="stylesheet" href="css/style.css?v=3">
+<link rel="stylesheet" href="css/style.css?v=4">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>&#128054;</text></svg>">
 </head>
 <body>
@@ -65,12 +65,12 @@
           <div class="stat"><b id="statLeft">205</b><span>left for you</span></div>
         </div>
 
-        <div id="pendingCard" class="pending" hidden>
-          <p class="pending-label">You still owe a drawing of</p>
-          <h2 id="pendingBreed"></h2>
-          <p class="pending-meta" id="pendingMeta"></p>
-          <button class="btn primary" id="pendingUploadBtn">Upload your drawing</button>
-          <button class="btn ghost small" id="rollAnywayBtn">Roll a new one anyway</button>
+        <div id="lastRoll" class="lastroll" hidden>
+          <p class="lastroll-label">Last time you rolled</p>
+          <h3 id="lastRollBreed"></h3>
+          <button class="btn ghost small" id="lastRollOpen">Show me again</button>
+          <p class="lastroll-note">Just a reminder kept in this browser. Nothing is claimed
+          until you upload a drawing.</p>
         </div>
 
         <div id="rollCta">
@@ -126,14 +126,24 @@
 
       <!-- result -->
       <div id="rollResult" hidden>
-        <p class="result-label">This week you're drawing</p>
+        <p class="result-label">You&rsquo;re drawing</p>
         <h2 id="resultBreed"></h2>
         <p class="result-group" id="resultGroup"></p>
+
+        <figure id="resultPhoto" class="result-photo" hidden>
+          <img id="resultImg" alt="">
+        </figure>
+
+        <p class="result-akc">
+          <a id="resultAkc" href="#" target="_blank" rel="noopener noreferrer">Read about the breed at the AKC &rarr;</a>
+        </p>
+
         <div class="result-actions">
-          <button class="btn primary" id="acceptBtn">Lock it in</button>
-          <button class="btn ghost" id="rerollBtn">Reroll</button>
+          <button class="btn primary" id="resultUploadBtn">Upload a drawing</button>
+          <button class="btn ghost" id="rerollBtn">Roll again</button>
         </div>
-        <p class="fineprint">Locking it in saves the breed to your list so it never comes up again.</p>
+        <p class="fineprint">Nothing is saved by rolling. A breed only stops coming up
+        once you&rsquo;ve uploaded a drawing of it.</p>
       </div>
 
     </section>
@@ -164,6 +174,15 @@
     <button class="modal-close" id="modalClose" aria-label="Close">&times;</button>
     <h2 id="modalBreed"></h2>
     <p class="modal-group" id="modalGroup"></p>
+
+    <div class="modal-ref">
+      <figure id="modalRefFig" class="modal-ref-photo" hidden>
+        <img id="modalRefImg" alt="">
+        <figcaption>Reference</figcaption>
+      </figure>
+      <a id="modalAkc" class="modal-akc" href="#" target="_blank" rel="noopener noreferrer">AKC breed page &rarr;</a>
+    </div>
+
     <div id="modalArtists" class="modal-artists"></div>
     <div class="upload-row">
       <input type="file" id="fileInput" accept="image/*" hidden>
@@ -216,8 +235,9 @@
   </g>
 </svg>
 
-<script src="js/config.js?v=3"></script>
-<script src="js/breeds.js?v=3"></script>
-<script src="js/app.js?v=3"></script>
+<script src="js/config.js?v=4"></script>
+<script src="js/breeds.js?v=4"></script>
+<script src="js/images.js?v=4"></script>
+<script src="js/app.js?v=4"></script>
 </body>
 </html>

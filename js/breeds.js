@@ -230,3 +230,19 @@ function breedSlug(name) {
     .normalize("NFD").replace(/[\u0300-\u036f]/g, "")   // Löwchen -> Lowchen
     .toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 }
+
+// AKC breed-page slugs that don't follow the plain name -> slug rule.
+// Verified against https://www.akc.org/breed-sitemap.xml -- without these four,
+// the "learn more" links 404. AKC splits Poodle and Manchester Terrier by
+// variety, so we point at the standard of each.
+const AKC_SLUG_OVERRIDES = {
+  "Saint Bernard": "st-bernard",
+  "Poodle": "poodle-standard",
+  "Manchester Terrier": "manchester-terrier-standard",
+  "Cirneco dell'Etna": "cirneco-delletna"
+};
+
+function akcUrl(name) {
+  return "https://www.akc.org/dog-breeds/" +
+         (AKC_SLUG_OVERRIDES[name] || breedSlug(name)) + "/";
+}

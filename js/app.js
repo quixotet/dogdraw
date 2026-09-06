@@ -50,6 +50,23 @@ function rawUrl(path) {
   return `https://raw.githubusercontent.com/${r.owner}/${r.name}/${r.branch}/${path}`;
 }
 
+/** Filename for a breed's reference headshot, or null. The folder name has a
+ *  space in it, hence the encoding. */
+function headshotUrl(name) {
+  const f = (typeof BREED_IMAGES !== 'undefined') && BREED_IMAGES[breedSlug(name)];
+  return f ? 'dog%20headshots/' + encodeURIComponent(f) : null;
+}
+
+/* Rolling commits nothing, so the last roll is remembered per artist in this
+   browser only - purely so you don't forget what you're meant to be drawing. */
+function lastRollKey() { return 'ddc_lastroll_' + breedSlug(state.artist || ''); }
+function setLastRoll(n) {
+  try { n ? localStorage.setItem(lastRollKey(), n) : localStorage.removeItem(lastRollKey()); } catch (_) {}
+}
+function getLastRoll() {
+  try { return localStorage.getItem(lastRollKey()); } catch (_) { return null; }
+}
+
 function otherArtist() {
   return CONFIG.artists.find(a => a !== state.artist) || CONFIG.artists[1];
 }
@@ -166,19 +183,12 @@ function myEntries() { return state.data.entries.filter(e => e.artist === state.
 function hasDrawn(breed, artist) { const e = entryFor(breed, artist); return !!(e && e.drawings && e.drawings.length); }
 
 function breedState(name) {
-  const me = state.artist, them = otherArtist();
-  const mine = entryFor(name, me), theirs = entryFor(name, them);
-  const mineDrawn = !!(mine && mine.drawings.length), theirsDrawn = !!(theirs && theirs.drawings.length);
+  const mineDrawn = hasDrawn(name, state.artist);
+  const theirsDrawn = hasDrawn(name, otherArtist());
   if (mineDrawn && theirsDrawn) return 'both';
   if (mineDrawn) return 'mine';
   if (theirsDrawn) return 'theirs';
-  if (mine || theirs) return 'pending';
   return 'none';
-}
-
-function firstThumb(name) {
-  for (const e of entriesFor(name)) if (e.drawings && e.drawings.length) return e.drawings[0].path;
-  return null;
 }
 
 /* -------------------------------- login -------------------------------- */
@@ -257,38 +267,55 @@ $$('.tab').forEach(t => t.onclick = () => {
 /* -------------------------------- roller ------------------------------- */
 
 function renderRoller() {
-  const mine = myEntries();
-  const drawnByMe = mine.filter(e => e.drawings.length).length;
+  const drawnByMe = myEntries().filter(e => e.drawings.length).length;
   const both = BREEDS.filter(b => breedState(b.n) === 'both').length;
   $('#statMine').textContent = drawnByMe;
   $('#statBoth').textContent = both;
-  $('#statLeft').textContent = BREEDS.length - mine.length;
+  $('#statLeft').textContent = BREEDS.length - drawnByMe;
 
-  const pending = mine.find(e => !e.drawings.length);
-  $('#pendingCard').hidden = !pending;
-  if (pending) {
-    $('#pendingBreed').textContent = pending.breed;
-    $('#pendingMeta').textContent = 'Rolled ' + fmtDate(pending.rolledAt);
-  }
-  $('#rollCta').hidden = !!pending;
+  let last = getLastRoll();
+  if (last && hasDrawn(last, state.artist)) { setLastRoll(null); last = null; }
+  $('#lastRoll').hidden = !last;
+  if (last) $('#lastRollBreed').textContent = last;
+
   $('#rollIdle').hidden = false;
   $('#rollAnim').hidden = true;
   $('#rollResult').hidden = true;
 }
 
-$('#pendingUploadBtn').onclick = () => {
-  const pending = myEntries().find(e => !e.drawings.length);
-  if (pending) openModal(pending.breed);
-};
-$('#rollAnywayBtn').onclick = () => doRoll();
+/** Paint the result panel for a breed: name, group, headshot, AKC link. */
+function showResult(breedName) {
+  const b = BREEDS.find(x => x.n === breedName);
+  if (!b) return;
+  state.lastRoll = b;
+  $('#resultBreed').textContent = b.n;
+  $('#resultGroup').textContent = b.g + ' Group';
+
+  const shot = headshotUrl(b.n);
+  const fig = $('#resultPhoto'), img = $('#resultImg');
+  fig.hidden = true;
+  if (shot) {
+    img.onerror = () => { img.onerror = null; fig.hidden = true; };
+    img.onload = () => { fig.hidden = false; };
+    img.alt = b.n; img.src = shot;
+  }
+  $('#resultAkc').href = akcUrl(b.n);
+
+  $('#rollIdle').hidden = true;
+  $('#rollAnim').hidden = true;
+  $('#rollResult').hidden = false;
+}
+
 $('#rollBtn').onclick = () => doRoll();
 $('#rerollBtn').onclick = () => doRoll();
+$('#lastRollOpen').onclick = () => { const n = getLastRoll(); if (n) showResult(n); };
+$('#resultUploadBtn').onclick = () => { if (state.lastRoll) openModal(state.lastRoll.n); };
 
 function candidatePool() {
-  // Only your own history narrows the pool - you and the other artist can land on
-  // the same breed, and that's half the fun.
-  const mineNames = new Set(myEntries().map(e => e.breed));
-  return BREEDS.filter(b => !mineNames.has(b.n));
+  // A breed leaves your pool only once you've actually uploaded a drawing of it.
+  // Rolling it, or even seeing it a dozen times, changes nothing.
+  const drawn = new Set(myEntries().filter(e => e.drawings.length).map(e => e.breed));
+  return BREEDS.filter(b => !drawn.has(b.n));
 }
 
 const ROLL_LINES = [
@@ -315,37 +342,9 @@ async function doRoll() {
 
   await new Promise(r => setTimeout(r, CONFIG.rollDuration || 3200));
 
-  $('#rollAnim').hidden = true;
-  $('#resultBreed').textContent = pick.n;
-  $('#resultGroup').textContent = pick.g + ' Group';
-  $('#rollResult').hidden = false;
+  setLastRoll(pick.n);
+  showResult(pick.n);
 }
-
-$('#acceptBtn').onclick = async () => {
-  const pick = state.lastRoll;
-  if (!pick) return;
-  const btn = $('#acceptBtn');
-  btn.disabled = true; btn.textContent = 'Saving…';
-  try {
-    await commitProgress(data => {
-      if (!data.entries.some(e => e.breed === pick.n && e.artist === state.artist)) {
-        data.entries.push({
-          artist: state.artist,
-          breed: pick.n,
-          group: pick.g,
-          rolledAt: new Date().toISOString(),
-          drawings: []
-        });
-      }
-    }, `Roll: ${state.artist} draws the ${pick.n}`);
-    flash(`${pick.n} is yours. Go draw.`);
-    renderRoller(); renderGallery();
-  } catch (e) {
-    if (e.message !== 'NO_TOKEN') say('Could not save the roll: ' + e.message);
-  } finally {
-    btn.disabled = false; btn.textContent = 'Lock it in';
-  }
-};
 
 /* ------------------------------- gallery ------------------------------- */
 
@@ -379,32 +378,36 @@ function renderGallery() {
 
   const frag = document.createDocumentFragment();
   shown.forEach(b => {
-    const s = breedState(b.n);
-    const thumb = firstThumb(b.n);
+    const st2 = breedState(b.n);
     const card = document.createElement('div');
-    card.className = 'card ' + s;
+    card.className = 'card ' + st2;
     card.tabIndex = 0;
     card.setAttribute('role', 'button');
 
+    // The gallery shows the breed itself. Your drawings live one click in.
     const tw = document.createElement('div');
     tw.className = 'thumb-wrap';
-    if (thumb) {
-      const img = document.createElement('img');
-      img.loading = 'lazy'; img.alt = '';
-      img.src = rawUrl(thumb);
-      img.onerror = () => { img.onerror = null; img.src = thumb; };
-      tw.appendChild(img);
-    } else {
+    const placeholder = () => {
       const ph = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
       ph.setAttribute('class', 'ph');
       ph.setAttribute('viewBox', '0 0 120 90');
       const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
       use.setAttribute('href', '#dogMark');
-      ph.appendChild(use); tw.appendChild(ph);
+      ph.appendChild(use);
+      return ph;
+    };
+    const shot = headshotUrl(b.n);
+    if (shot) {
+      const img = document.createElement('img');
+      img.loading = 'lazy'; img.alt = ''; img.src = shot;
+      img.onerror = () => { img.replaceWith(placeholder()); };
+      tw.appendChild(img);
+    } else {
+      tw.appendChild(placeholder());
     }
     card.appendChild(tw);
 
-    if (s === 'both') {
+    if (st2 === 'both') {
       const c = document.createElement('span');
       c.className = 'crown'; c.textContent = '\u2b50'; card.appendChild(c);
     }
@@ -419,9 +422,9 @@ function renderGallery() {
     dots.className = 'cdots';
     CONFIG.artists.forEach(a => {
       const d = document.createElement('span');
-      const e = entryFor(b.n, a);
-      d.className = 'cdot' + (e && e.drawings.length ? ' on' : e ? ' pend' : '');
-      d.title = a + (e && e.drawings.length ? ' \u2014 drawn' : e ? ' \u2014 claimed' : ' \u2014 not started');
+      const drawn = hasDrawn(b.n, a);
+      d.className = 'cdot' + (drawn ? ' on' : '');
+      d.title = a + (drawn ? ' has drawn this' : ' has not drawn this yet');
       dots.appendChild(d);
     });
     body.appendChild(dots);
@@ -449,6 +452,16 @@ function openModal(breedName) {
   $('#modalBreed').textContent = b.n;
   $('#modalGroup').textContent = b.g + ' Group';
 
+  const shot = headshotUrl(b.n);
+  const rfig = $('#modalRefFig'), rimg = $('#modalRefImg');
+  rfig.hidden = true;
+  if (shot) {
+    rimg.onerror = () => { rimg.onerror = null; rfig.hidden = true; };
+    rimg.onload = () => { rfig.hidden = false; };
+    rimg.alt = b.n; rimg.src = shot;
+  }
+  $('#modalAkc').href = akcUrl(b.n);
+
   const wrap = $('#modalArtists');
   wrap.innerHTML = '';
   CONFIG.artists.forEach(a => {
@@ -461,9 +474,13 @@ function openModal(breedName) {
 
     const st = document.createElement('p');
     st.className = 'status';
-    if (!e) st.textContent = 'Hasn’t rolled this breed yet.';
-    else if (!e.drawings.length) st.textContent = 'Claimed ' + fmtDate(e.rolledAt) + ' — no drawing yet.';
-    else st.textContent = `${e.drawings.length} drawing${e.drawings.length > 1 ? 's' : ''} · claimed ${fmtDate(e.rolledAt)}`;
+    if (!e || !e.drawings.length) {
+      st.textContent = 'No drawing yet.';
+    } else {
+      const n = e.drawings.length;
+      st.textContent = n + ' drawing' + (n > 1 ? 's' : '') +
+                       ' \u00b7 first uploaded ' + fmtDate(e.drawings[0].uploadedAt);
+    }
     block.appendChild(st);
 
     if (e && e.drawings.length) {
@@ -525,6 +542,7 @@ $('#fileInput').addEventListener('change', async ev => {
       }
       e.drawings.push({ path, uploadedAt: new Date().toISOString() });
     }, `Drawing: ${state.artist}'s ${breed}`);
+    if (getLastRoll() === breed) setLastRoll(null);
     $('#uploadNote').textContent = '';
     flash('Uploaded. It may take GitHub a few seconds to serve the image.');
     openModal(breed);
