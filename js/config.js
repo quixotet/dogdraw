@@ -9,10 +9,9 @@ const CONFIG = {
   artists: ["Aspen", "Casey"],
 
   // Shared passphrase, stored as a SHA-256 hash so the plain word isn't sitting
-  // in the repo. Default passphrase is:  goodboy
-  // To change it, run this in a terminal and paste the result here:
+  // in the repo. To change it, run this in a terminal and paste the result here:
   //   printf '%s' 'your-new-passphrase' | shasum -a 256
-  passphraseHash: "3ab8fa69d3458631d1a2727253a277c0145f8554e2d82082fa2b5972e9a15576",
+  passphraseHash: "5ca43653795b25b819d1502c18d7bd7ce7d489a41af9a832e0ec9c528b203e91",
 
   // Where progress and drawings are committed. Leave owner/repo blank and the
   // site figures them out from its own GitHub Pages URL. Only fill these in if
