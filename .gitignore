@@ -1,3 +1,7 @@
 .DS_Store
 *.psd
 Thumbs.db
+
+# Setup notes: kept locally, deliberately not published
+README.md
+SETUP.local.md
