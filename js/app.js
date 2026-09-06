@@ -373,7 +373,9 @@ function renderGallery() {
     if (g && b.g !== g) return false;
     if (st && breedState(b.n) !== st) return false;
     return true;
-  });
+  // One straight A-Z run, not grouped. localeCompare so Lowchen and Vendeen
+  // sort by their base letters instead of landing after Z.
+  }).sort((a, b) => a.n.localeCompare(b.n, undefined, { sensitivity: 'base' }));
 
   const frag = document.createDocumentFragment();
   shown.forEach(b => {
