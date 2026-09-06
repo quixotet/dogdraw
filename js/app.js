@@ -1,5 +1,5 @@
 /* ===========================================================================
-   The Dog Draw Club
+   DogDraw
    Static site. Progress + drawings are committed to the GitHub repo that
    serves this page, using a fine-grained personal access token that lives
    only in the visitor's browser.
@@ -216,7 +216,6 @@ async function enterApp(artist) {
   $('#login').hidden = true;
   $('#app').hidden = false;
   $('#whoName').textContent = artist;
-  $('#partnerName').textContent = otherArtist();
   await refresh();
 }
 
@@ -286,14 +285,10 @@ $('#rollBtn').onclick = () => doRoll();
 $('#rerollBtn').onclick = () => doRoll();
 
 function candidatePool() {
+  // Only your own history narrows the pool - you and the other artist can land on
+  // the same breed, and that's half the fun.
   const mineNames = new Set(myEntries().map(e => e.breed));
-  let pool = BREEDS.filter(b => !mineNames.has(b.n));
-  if ($('#avoidPartner').checked) {
-    const theirs = new Set(state.data.entries.filter(e => e.artist === otherArtist()).map(e => e.breed));
-    const narrowed = pool.filter(b => !theirs.has(b.n));
-    if (narrowed.length) pool = narrowed;
-  }
-  return pool;
+  return BREEDS.filter(b => !mineNames.has(b.n));
 }
 
 const ROLL_LINES = [
@@ -488,7 +483,7 @@ function openModal(breedName) {
     wrap.appendChild(block);
   });
 
-  $('#uploadNote').textContent = state.readOnly ? 'Connect a GitHub token to upload.' : '';
+  $('#uploadNote').textContent = state.readOnly ? 'Add the access key to upload.' : '';
   $('#modal').hidden = false;
 }
 
@@ -571,7 +566,8 @@ function prepareImage(file) {
 /* -------------------------------- token -------------------------------- */
 
 function openTokenModal() {
-  $('#tokenRepo').textContent = state.repo ? `${state.repo.owner}/${state.repo.name}` : 'your repo';
+  const tr = $('#tokenRepo');
+  if (tr) tr.textContent = state.repo ? `${state.repo.owner}/${state.repo.name}` : 'your repo';
   $('#tokenError').hidden = true;
   $('#tokenModal').hidden = false;
   $('#tokenInput').focus();
@@ -587,14 +583,16 @@ $('#tokenSave').onclick = async () => {
   try {
     if (!state.repo) throw new Error('Cannot work out which repo this is. Fill in CONFIG.repo in js/config.js.');
     const res = await fetch(`https://api.github.com/repos/${state.repo.owner}/${state.repo.name}`, { headers: ghHeaders() });
-    if (!res.ok) throw new Error('GitHub rejected that token (' + res.status + ').');
+    if (res.status === 401) throw new Error('That key wasn\u2019t accepted. Check you pasted all of it \u2014 they\u2019re long.');
+    if (res.status === 404) throw new Error('That key doesn\u2019t reach this site\u2019s repository. It may be scoped to the wrong one.');
+    if (!res.ok) throw new Error('Couldn\u2019t check that key (error ' + res.status + '). Try again in a moment.');
     const info = await res.json();
-    if (!info.permissions || !info.permissions.push) throw new Error('That token can read but not write to this repo.');
+    if (!info.permissions || !info.permissions.push) throw new Error('That key can read but not save. It needs Contents: Read and write.');
     localStorage.setItem('ddc_token', t);
     state.readOnly = false;
     $('#tokenModal').hidden = true;
     $('#tokenInput').value = '';
-    flash('Connected to GitHub. You can roll and upload now.');
+    flash('Key saved. You can roll and upload now.');
     await refresh();
   } catch (e) {
     state.token = prev;
@@ -609,6 +607,16 @@ $('#tokenSave').onclick = async () => {
 
 (function boot() {
   state.repo = resolveRepo();
+
+  // A setup link shaped like  https://.../#key=<token>  drops the access key straight
+  // into this browser, so someone who isn't going to hand-copy a credential never has to.
+  // The fragment never reaches a server; it's stripped from the URL immediately after.
+  const keyInUrl = location.hash.match(/[#&]key=([^&]+)/);
+  if (keyInUrl) {
+    try { localStorage.setItem('ddc_token', decodeURIComponent(keyInUrl[1])); } catch (_) {}
+    history.replaceState(null, '', location.pathname + location.search);
+  }
+
   state.token = localStorage.getItem('ddc_token');
   state.readOnly = !state.token;
   initFilters();

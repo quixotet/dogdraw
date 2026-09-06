@@ -1,4 +1,4 @@
-# The Dog Draw Club
+# DogDraw
 
 A two-person drawing challenge: all 205 AKC-recognized breeds, one a week, no repeats.
 Static site, hosted on GitHub Pages. Progress and drawings are committed straight back
@@ -14,7 +14,7 @@ into this repository, so both artists always see the same thing.
 cd DogDraw
 git init -b main
 git add .
-git commit -m "The Dog Draw Club"
+git commit -m "DogDraw"
 git remote add origin https://github.com/YOUR-USERNAME/YOUR-REPO.git
 git push -u origin main
 ```
@@ -29,8 +29,9 @@ loaded straight from the repo.
 
 Two things to change:
 
-- **`artists`** — replace `"Friend"` with your friend's actual name. Do this *before*
-  either of you starts rolling; the name is the key everything is filed under.
+- **`artists`** — already set to `["Aspen", "Casey"]`. Don't change a name after either
+  of you has started rolling; the name is the key everything is filed under, so renaming
+  orphans that person's history.
 - **`passphraseHash`** — the default passphrase is `goodboy`. To change it:
 
   ```bash
@@ -42,10 +43,10 @@ Two things to change:
 You do **not** need to fill in `repo` — the site works out its own owner and repo name
 from the GitHub Pages URL. Only fill it in if you use a custom domain.
 
-### 3. Each of you makes a GitHub token
+### 3. Make ONE access key and share it
 
-Reading the site needs nothing. Saving a roll or uploading a drawing writes to the repo,
-so it needs a token. The site asks for one the first time you try to save.
+There is only one key for the whole site. Aspen makes it; Casey never needs a GitHub
+account, and does not need to be added as a collaborator.
 
 **GitHub → Settings → Developer settings → Personal access tokens → Fine-grained tokens
 → Generate new token**
@@ -54,9 +55,24 @@ so it needs a token. The site asks for one the first time you try to save.
 - **Repository permissions:** Contents → **Read and write**
 - Set an expiry you're happy with
 
-Paste it into the site when prompted. It's stored in that browser's local storage and is
-sent only to github.com. Your friend needs their own token, and needs to be a collaborator
-on the repo (**Settings → Collaborators**).
+Reading the site needs no key at all. Only saving a roll or uploading a drawing does.
+
+**Getting it onto Casey's browser.** Easiest is a setup link — take the site URL and add
+`#key=` and the token:
+
+```
+https://quixotet.github.io/dogdraw/#key=github_pat_XXXXXXXX
+```
+
+She opens it once, the key is stored in her browser, and the URL is scrubbed immediately
+so it doesn't sit in the address bar. After that she just goes to the normal URL.
+
+Send that link somewhere private — it does land in her browser history, and anyone who
+has it can write to this repo. Nothing else: the key is scoped to this repository only,
+and you can revoke it from the same GitHub page at any time. If you'd rather not use a
+link, she can paste the key into the prompt the site shows her instead.
+
+Both of you can use the same key on as many devices as you like.
 
 ---
 
@@ -79,8 +95,8 @@ the live GitHub Pages copy.
 
 **Roller.** Picks a breed at random from the ones you personally haven't rolled yet, plays
 the animation, and shows you the result. Nothing is saved until you hit *Lock it in* — so
-*Reroll* costs you nothing. There's an optional checkbox to also skip breeds your friend
-has already claimed, if you'd rather not overlap.
+*Reroll* costs you nothing. Only your own history narrows the pool — you and Casey can
+land on the same breed, which is half the point.
 
 If you have a breed you've claimed but not uploaded yet, the roller nudges you about it
 instead of offering a fresh roll. You can roll anyway.
@@ -94,7 +110,7 @@ instead of offering a fresh roll. You can roll anyway.
 | Normal, with thumbnail | One of you has drawn it |
 | Gold frame, star, shimmer | **Both** of you have drawn it |
 
-The two dots on each card are the two artists — filled teal means drawn, pale gold means
+The two dots on each card are Aspen and Casey — filled teal means drawn, pale gold means
 claimed, grey means not started. Click any breed to see the drawings and their dates, and
 to upload your own.
 

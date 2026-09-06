@@ -6,7 +6,7 @@ const CONFIG = {
   // The two artists. Names appear on the login screen and on every drawing.
   // Changing a name after you've started will orphan that person's history,
   // so pick them now.
-  artists: ["Aspen", "Friend"],
+  artists: ["Aspen", "Casey"],
 
   // Shared passphrase, stored as a SHA-256 hash so the plain word isn't sitting
   // in the repo. Default passphrase is:  goodboy

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>The Dog Draw Club</title>
+<title>DogDraw</title>
 <link rel="stylesheet" href="css/style.css">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>&#128054;</text></svg>">
 </head>
@@ -15,7 +15,7 @@
     <div class="login-mark" aria-hidden="true">
       <svg viewBox="0 0 120 90"><use href="#dogMark"/></svg>
     </div>
-    <h1>The Dog&nbsp;Draw Club</h1>
+    <h1>DogDraw</h1>
     <p class="tagline">205 breeds. One a week. No repeats.</p>
 
     <form id="passForm" autocomplete="off">
@@ -38,7 +38,7 @@
   <header class="topbar">
     <div class="brand">
       <svg class="brand-mark" viewBox="0 0 120 90" aria-hidden="true"><use href="#dogMark"/></svg>
-      <span>Dog Draw Club</span>
+      <span>DogDraw</span>
     </div>
     <nav class="tabs">
       <button class="tab active" data-view="roller">Roller</button>
@@ -74,10 +74,6 @@
         <div id="rollCta">
           <p class="cta-copy">Ready for this week's breed?</p>
           <button id="rollBtn" class="btn primary big">Roll the dog</button>
-          <label class="avoid">
-            <input type="checkbox" id="avoidPartner">
-            <span>Skip breeds <b id="partnerName">they</b> already have</span>
-          </label>
         </div>
       </div>
 
@@ -175,25 +171,33 @@
   </div>
 </div>
 
-<!-- ======================= TOKEN PROMPT ======================= -->
+<!-- ======================= ACCESS KEY ======================= -->
 <div id="tokenModal" class="modal" hidden>
   <div class="modal-card narrow" role="dialog" aria-modal="true">
-    <h2>Connect to GitHub</h2>
-    <p class="muted">Saving a roll or a drawing writes to the repo, so it needs a
-    personal access token with write access to <b id="tokenRepo"></b>. It's kept
-    in this browser only &mdash; it never leaves your machine except to talk to GitHub.</p>
-    <ol class="howto">
-      <li>Go to <b>github.com &rarr; Settings &rarr; Developer settings &rarr; Personal access tokens &rarr; Fine-grained tokens</b></li>
-      <li>Generate a token scoped to just this repository</li>
-      <li>Give it <b>Repository permissions &rarr; Contents &rarr; Read and write</b></li>
-      <li>Paste it below</li>
-    </ol>
-    <input type="password" id="tokenInput" placeholder="github_pat_&hellip;">
+    <h2>One-time setup</h2>
+    <p class="muted">Before this browser can save a roll or a drawing, it needs the
+    access key for the site. Whoever set this up has it &mdash; paste it below. You only
+    do this once on this device, and you can look around without it.</p>
+
+    <input type="password" id="tokenInput" placeholder="Paste the key here">
     <p id="tokenError" class="err" hidden></p>
     <div class="result-actions">
-      <button class="btn primary" id="tokenSave">Save token</button>
-      <button class="btn ghost" id="tokenCancel">Browse read-only</button>
+      <button class="btn primary" id="tokenSave">Save the key</button>
+      <button class="btn ghost" id="tokenCancel">Just looking</button>
     </div>
+
+    <details class="howto-details">
+      <summary>Setting this up for the first time?</summary>
+      <p class="muted">The key is a GitHub fine-grained personal access token for
+      <b id="tokenRepo"></b>. Only one is needed for the whole site &mdash; make it once
+      and share it with the other artist.</p>
+      <ol class="howto">
+        <li><b>github.com &rarr; Settings &rarr; Developer settings &rarr; Personal access
+        tokens &rarr; Fine-grained tokens &rarr; Generate new token</b></li>
+        <li><b>Repository access:</b> Only select repositories &rarr; this one</li>
+        <li><b>Repository permissions:</b> Contents &rarr; <b>Read and write</b></li>
+      </ol>
+    </details>
   </div>
 </div>
 

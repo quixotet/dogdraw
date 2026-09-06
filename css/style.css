@@ -109,10 +109,6 @@ button{font:inherit}
 .stat b{display:block; font-family:var(--font); font-size:29px; line-height:1}
 .stat span{font-size:11.5px; text-transform:uppercase; letter-spacing:.07em; color:var(--ink-3)}
 .cta-copy{color:var(--ink-2); margin:0 0 20px}
-.avoid{
-  display:flex; align-items:center; justify-content:center; gap:8px;
-  margin-top:22px; font-size:13px; color:var(--ink-2); cursor:pointer;
-}
 .pending{
   background:var(--card); border:1px dashed var(--accent); border-radius:var(--r);
   padding:26px; margin-bottom:30px;
@@ -304,6 +300,15 @@ button{font:inherit}
 .upload-note{font-size:13px; color:var(--ink-3)}
 .howto{font-size:13px; color:var(--ink-2); line-height:1.7; padding-left:20px; margin:16px 0}
 #tokenInput{margin-bottom:14px}
+.howto-details{margin-top:22px; border-top:1px solid var(--rule); padding-top:16px}
+.howto-details summary{
+  cursor:pointer; font-size:13px; font-weight:600; color:var(--ink-2); list-style:none;
+}
+.howto-details summary::-webkit-details-marker{display:none}
+.howto-details summary::before{content:"\25b8\00a0\00a0"; color:var(--ink-3)}
+.howto-details[open] summary::before{content:"\25be\00a0\00a0"}
+.howto-details summary:hover{color:var(--accent)}
+.howto-details p{font-size:13px; margin:12px 0 0}
 #tokenModal .result-actions{justify-content:flex-start}
 
 @media(max-width:640px){
