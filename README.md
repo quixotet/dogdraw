@@ -60,6 +60,21 @@ on the repo (**Settings → Collaborators**).
 
 ---
 
+## Previewing it locally
+
+Opening `index.html` by double-clicking won't load saved progress — browsers block a
+local page from reading a local file. Run a tiny server instead:
+
+```bash
+cd DogDraw
+python3 -m http.server 8000
+```
+
+Then open <http://localhost:8000>. The roller and gallery work; saving still needs
+the live GitHub Pages copy.
+
+---
+
 ## How it works
 
 **Roller.** Picks a breed at random from the ones you personally haven't rolled yet, plays
