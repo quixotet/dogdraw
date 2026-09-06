@@ -234,7 +234,12 @@ async function refresh() {
     state.sha = sha;
     say(null);
   } catch (e) {
-    say('Could not load saved progress: ' + e.message);
+    if (location.protocol === 'file:') {
+      say('Opened straight from disk, so saved progress can\u2019t load. Run ' +
+          '"python3 -m http.server" in this folder, or push it to GitHub Pages.');
+    } else {
+      say('Could not load saved progress: ' + e.message);
+    }
   }
   renderRoller();
   renderGallery();
