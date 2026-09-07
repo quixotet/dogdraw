@@ -12,18 +12,6 @@
           "uploadedAt": "2026-09-07T15:47:11.703Z"
         }
       ]
-    },
-    {
-      "artist": "Casey",
-      "breed": "Affenpinscher",
-      "group": "Toy",
-      "rolledAt": "2026-09-07T15:47:29.375Z",
-      "drawings": [
-        {
-          "path": "drawings/casey/affenpinscher-1788796048259.jpg",
-          "uploadedAt": "2026-09-07T15:47:29.375Z"
-        }
-      ]
     }
   ]
 }
