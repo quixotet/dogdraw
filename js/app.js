@@ -53,8 +53,13 @@ function rawUrl(path) {
 /** Filename for a breed's reference headshot, or null. The folder name has a
  *  space in it, hence the encoding. */
 function headshotUrl(name) {
-  const f = (typeof BREED_IMAGES !== 'undefined') && BREED_IMAGES[breedSlug(name)];
-  return f ? 'dog%20headshots/' + encodeURIComponent(f) : null;
+  const rec = (typeof BREED_IMAGES !== 'undefined') && BREED_IMAGES[breedSlug(name)];
+  if (!rec) return null;
+  const file = Array.isArray(rec) ? rec[0] : rec;
+  const tag  = Array.isArray(rec) ? rec[1] : null;
+  // The tag is a hash of the file's contents, so swapping an image for a new
+  // one at the same filename changes the URL and defeats the browser cache.
+  return 'dog%20headshots/' + encodeURIComponent(file) + (tag ? '?v=' + tag : '');
 }
 
 /* Rolling commits nothing, so the last roll is remembered per artist in this
