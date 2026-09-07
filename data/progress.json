@@ -1,4 +1,17 @@
 {
   "version": 1,
-  "entries": []
+  "entries": [
+    {
+      "artist": "Aspen",
+      "breed": "Black and Tan Coonhound",
+      "group": "Hound",
+      "rolledAt": "2026-09-07T18:30:49.126Z",
+      "drawings": [
+        {
+          "path": "drawings/aspen/black-and-tan-coonhound-1788805847523.jpg",
+          "uploadedAt": "2026-09-07T18:30:49.126Z"
+        }
+      ]
+    }
+  ]
 }
