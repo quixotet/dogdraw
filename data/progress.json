@@ -12,6 +12,18 @@
           "uploadedAt": "2026-09-07T15:46:43.489Z"
         }
       ]
+    },
+    {
+      "artist": "Casey",
+      "breed": "Afghan Hound",
+      "group": "Hound",
+      "rolledAt": "2026-09-07T15:47:11.703Z",
+      "drawings": [
+        {
+          "path": "drawings/casey/afghan-hound-1788796030642.jpg",
+          "uploadedAt": "2026-09-07T15:47:11.703Z"
+        }
+      ]
     }
   ]
 }
