@@ -171,6 +171,37 @@ async function commitProgress(mutate, message) {
   throw lastErr;
 }
 
+/** Remove one drawing: its record first, then the file.
+ *  That order matters. An orphaned file in the repo is harmless clutter; a
+ *  record still pointing at a deleted file shows a broken image to both of you.
+ *  So if the second step fails, we fail safe. */
+async function deleteDrawing(breed, path) {
+  requireToken();
+
+  await commitProgress(data => {
+    const e = data.entries.find(x => x.breed === breed && x.artist === state.artist);
+    if (!e) return;
+    e.drawings = e.drawings.filter(d => d.path !== path);
+    // No drawings left means the breed is back in your roll pool.
+    if (!e.drawings.length) data.entries = data.entries.filter(x => x !== e);
+  }, `Delete: ${state.artist}'s ${breed} drawing`);
+
+  try {
+    const look = await fetch(contentsUrl(path), { headers: ghHeaders(), cache: 'no-store' });
+    if (!look.ok) return;                       // already gone; nothing to do
+    const info = await look.json();
+    const r = state.repo;
+    await fetch(`https://api.github.com/repos/${r.owner}/${r.name}/contents/${path}`, {
+      method: 'DELETE',
+      headers: ghHeaders({ 'Content-Type': 'application/json' }),
+      body: JSON.stringify({
+        message: `Delete: ${state.artist}'s ${breed} drawing`,
+        sha: info.sha, branch: r.branch
+      })
+    });
+  } catch (_) { /* the record is already clean; a leftover file hurts nothing */ }
+}
+
 function requireToken() {
   if (!state.token) { openTokenModal(); throw new Error('NO_TOKEN'); }
 }
@@ -489,13 +520,52 @@ function openModal(breedName) {
       e.drawings.slice().reverse().forEach(d => {
         const fig = document.createElement('figure');
         fig.className = 'drawing';
+
         const img = document.createElement('img');
-        img.loading = 'lazy'; img.alt = `${a}'s ${b.n}`;
+        img.loading = 'lazy'; img.alt = a + "'s " + b.n;
         img.src = rawUrl(d.path);
         img.onerror = () => { img.onerror = null; img.src = d.path; };
+
         const cap = document.createElement('figcaption');
         cap.textContent = 'Uploaded ' + fmtDate(d.uploadedAt);
-        fig.appendChild(img); fig.appendChild(cap); dg.appendChild(fig);
+
+        fig.appendChild(img); fig.appendChild(cap);
+
+        // You can only delete your own work, and only after a second click.
+        if (a === state.artist) {
+          const del = document.createElement('button');
+          del.className = 'del';
+          del.textContent = 'Delete';
+          let armed = false, timer;
+          del.onclick = async () => {
+            if (!armed) {
+              armed = true;
+              del.textContent = 'Really delete?';
+              del.classList.add('armed');
+              clearTimeout(timer);
+              timer = setTimeout(() => {
+                armed = false; del.textContent = 'Delete'; del.classList.remove('armed');
+              }, 5000);
+              return;
+            }
+            clearTimeout(timer);
+            del.disabled = true; del.textContent = 'Deleting...';
+            try {
+              await deleteDrawing(b.n, d.path);
+              flash('Drawing deleted.');
+              openModal(b.n); renderRoller(); renderGallery();
+            } catch (err) {
+              if (err.message !== 'NO_TOKEN') {
+                del.disabled = false; del.textContent = 'Delete';
+                del.classList.remove('armed'); armed = false;
+                say('Could not delete: ' + err.message);
+              }
+            }
+          };
+          fig.appendChild(del);
+        }
+
+        dg.appendChild(fig);
       });
       block.appendChild(dg);
     }
