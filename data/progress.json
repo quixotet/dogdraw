@@ -2,18 +2,6 @@
   "version": 1,
   "entries": [
     {
-      "artist": "Aspen",
-      "breed": "Afghan Hound",
-      "group": "Hound",
-      "rolledAt": "2026-09-07T15:46:43.489Z",
-      "drawings": [
-        {
-          "path": "drawings/aspen/afghan-hound-1788796002141.jpg",
-          "uploadedAt": "2026-09-07T15:46:43.489Z"
-        }
-      ]
-    },
-    {
       "artist": "Casey",
       "breed": "Afghan Hound",
       "group": "Hound",
